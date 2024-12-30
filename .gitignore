@@ -1,5 +1,15 @@
 .idea/
 gender.csv
+gender_working.csv
+document_labels.csv
+tf-idf_voc_label.py
+tf_idf_sparse.csv
+vocabulary.csv
+test.py
+synthetic_data.csv
+test1.py
+synthetic_document_labels.csv
+synthetic_tf_idf_sparse.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
