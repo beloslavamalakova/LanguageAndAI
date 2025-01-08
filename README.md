@@ -14,11 +14,11 @@ Repository for a research paper "Impact of Gender-Neutral Data Cleaning on SVM a
   - Dependencies
   - Resources
 - Project's Pipeline
-  - 1. Data Cleaning
-  - 2. Data Preprocessing
-  - 3. Feature Engineering
-  - 4. Logistic Regression
-  - 5. SVM
+  - Data Cleaning
+  - Data Preprocessing
+  - Feature Engineering
+  - Logistic Regression
+  - SVM
 - Configuration
 - Extensions
 ## Paper Details
