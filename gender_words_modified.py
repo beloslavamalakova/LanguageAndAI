@@ -9,6 +9,8 @@ replacement_dict = {
     r"\b(fe)?male(s)?\b": "person",
     r"\b(wo)?m[ae]n\b": "person",
     r"\b(s)?he\b": "they",
+    r"\bpolice(wo)?m[ae]n\b": "person",
+    r"\bpost(wo)?m[ae]n\b": "person",
     
     r"\bher\b": "them",
     r"\bhers\b": "their",
@@ -30,6 +32,14 @@ replacement_dict = {
     r"\bempress(es)?\b": "person",
     r"\bgirlfriend(s)?\b": "person",
     r"\bgf(s)?\b": "person",
+    r"\bprincess(es)?\b": "person",
+    r"\bduchess(es)?\b": "person",
+    r"\bwaitress(es)?\b": "person",
+    r"\bactress(es)?\b": "person",
+    r"\bgoddess(es)?\b": "person",
+    r"\bheroine(s)?\b": "person",
+    r"\bwitch(es)?\b": "person",
+    r"\bstewardess(es)?\b": "person",
 
     r"\bhim\b": "them",
     r"\bhis\b": "their",
@@ -48,6 +58,17 @@ replacement_dict = {
     r"\blord(s)?\b": "person",
     r"\bboyfriend(s)?\b": "person",
     r"\bbf(s)?\b": "person",
+    r"\bprince(s)?\b": "person",
+    r"\bduke(s)?\b": "person",
+    r"\bknight(s)?\b": "person",
+    r"\bwaiter(s)?\b": "person",
+    r"\bactor(s)?\b": "person",
+    r"\bgod(s)?\b": "person",
+    r"\bhero(es)?\b": "person",
+    r"\bwizard(s)?\b": "person",
+    r"\bsteward(s)?\b": "person",
+    r"\bpresident(s)?\b": "person",
+    r"\bhost(s)?\b": "person",
 }
 
 #Replace gendered words
