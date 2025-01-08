@@ -25,10 +25,12 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 import csv
 import string
+from scipy.sparse import save_npz, load_npz
 import re
+import joblib
 import numpy as np
 
-def create_document_labels_file(input_file, output_file, max_rows=50000):
+def create_document_labels_file(input_file, output_file, max_rows=35000):
     """
     Reads the original dataset, extracts the row index and 'female' column, 
     and saves them into a new CSV file.
@@ -65,10 +67,10 @@ def preprocess_text(text):
     8. Return a cleaned list of words
 
     Examples:
-    - "Running" -> "run" (remove 'ing')
-    - "Horses" -> "horse" (remove trailing 's')
+    - "playing" -> "play" (remove 'ing')
+    - "kings" -> "king" (remove trailing 's')
     - "Painted" -> "paint" (remove 'ed')
-    - "Haaaaappy" -> "hapy" (reduce repeated letters)
+    - "Haaaaappy" -> "haappy" (reduce repeated letters)
 
     Limitation: words ending with s like boss, however in our program the word bos will be connected with the real word boss so there wont be much of a negative.
     """
@@ -112,7 +114,7 @@ def preprocess_text(text):
 
     return cleaned_words
 
-def load_and_preprocess(file_path, max_rows=50000):
+def load_and_preprocess(file_path, max_rows=35000):
     """
     Loads the CSV using pandas for speed and applies preprocessing.
     This function:
@@ -125,13 +127,26 @@ def load_and_preprocess(file_path, max_rows=50000):
     return df['post'].tolist()
 
 def main():
-    input_file = r"C:\Users\borka\Desktop\gender_working.csv"
+    input_file = "shuffled_file_gender_neutral.csv"
     output_file = "tf_idf_sparse.csv"
     vocab_file = "vocabulary.csv"
     label_file = "document_labels.csv"
+    #input_file = "shuffled_file.csv"
+
+    #uncomment this to create the shuffled file first
+    # df = pd.read_csv(input_file)
+
+    # # Shuffle the rows randomly
+    # df_shuffled = df.sample(frac=1, random_state=42).reset_index(drop=True)
+
+    # # Save the shuffled DataFrame to a new CSV file
+    # shuffled_file_path = "shuffled_file.csv"  # Replace with the desired output file name
+    # df_shuffled.to_csv(shuffled_file_path, index=False)
+    # print(f"Shuffled data saved to {shuffled_file_path}")
+    # return
 
     print("Loading and preprocessing data...")
-    documents = load_and_preprocess(input_file, max_rows=50000)
+    documents = load_and_preprocess(input_file, max_rows=35000)
 
     print("Fitting TfidfVectorizer...")
     # Use TfidfVectorizer to handle tokenization, vocabulary, and TF-IDF
@@ -145,7 +160,18 @@ def main():
     tf_idf_matrix = vectorizer.fit_transform(documents)
 
     print("Saving TF-IDF scores and vocabulary...")
+
+    tf_idf_npz_file = "tf_idf_sparse_matrix.npz"
+    save_npz(tf_idf_npz_file, tf_idf_matrix)
+    print(f"Sparse TF-IDF matrix saved to {tf_idf_npz_file}")
+
+    print("Saving TfidfVectorizer...")
+    vectorizer_file = "tfidf_vectorizer.pkl"
+    joblib.dump(vectorizer, vectorizer_file)
+    print(f"TfidfVectorizer saved to {vectorizer_file}")
+
     # Create inverse vocabulary mapping
+    '''
     inv_vocab = {idx: word for word, idx in vectorizer.vocabulary_.items()}
 
     with open(output_file, 'w', encoding='utf-8') as f:
@@ -153,7 +179,7 @@ def main():
         coo = tf_idf_matrix.tocoo()
         for row, col, score in zip(coo.row, coo.col, coo.data):
             f.write(f"{row},{inv_vocab[col]},{score:.5f}\n")
-
+    '''
     # Save the vocabulary
     with open(vocab_file, 'w', encoding='utf-8') as f:
         f.write("word,index\n")
@@ -164,7 +190,7 @@ def main():
     print(f"Vocabulary saved to {vocab_file}")
 
     # Save document labels
-    create_document_labels_file(input_file, label_file, max_rows=50000)
+    create_document_labels_file(input_file, label_file, max_rows=35000)
 
 if __name__ == "__main__":
     main()

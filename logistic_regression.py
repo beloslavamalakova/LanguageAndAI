@@ -1,7 +1,7 @@
 """
 Script: Logistic Regression on a preprocessed dataset
 Author: Beloslava Malakova
-Date: 30/12/2024
+Date: 30/12/2024, modified 08/01/2025
 
 Description: Applying Logistic regression with L1, L2 and elastic net regularization. Applied is k-fold cross-validation. Accuracy is measured through accuracy, precision, recall and F1 score.
 
@@ -11,7 +11,7 @@ Key Features:
 - 3-fold cross-validation for robust evaluation.
 
 Notes:
-- Does not work with the current TF-IDF matrix, tested however on ours with modifications making the word column to int, and it works. Line 156 changed to: f.write(f"{row},{col},{score:.5f}\n")
+- Does not work with the current TF-IDF matrix, tested however on ours with modifications making the word column to int, and it works. Line 155 changed to: f.write(f"{row},{col},{score:.5f}\n")
 !!! Instead of writing the actual token into the 'word' column we write the numeric column index. That way logistic_regression.py can do .astype(int) on "tf_idf_data['word']" successfully.
 
 """
