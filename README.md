@@ -15,12 +15,26 @@ Repository for a research paper "Impact of Gender-Neutral Data Cleaning on SVM a
    - Trained **SVM** on all three encodings, fine-tuning the **C** hyperparameter (0.1, 1, 10).  
    - Trained **Logistic Regression** on all three encodings, fine-tuning regularization methods (**L1, L2, Elastic Net**).  
 -  **Comparison:** Compared classification results across different models and data encodings.  
-
+## Reproduction
 ##  Dependencies
 
 The code was written using these libraries and versions:
-
-
+| Tool        | Version |
+|----------------|---------|
+| Python         | 3.10    |
+| scikit-learn   | 1.3.0   |
+| pandas         | 2.1.1   |
+| numpy          | 1.24.3  |
+| scipy          | 1.11.4  |
+| tqdm           | 4.66.1  |
+| joblib         | 1.3.2   |
+## Resources
+The experiments were conducted on multiple laptops with varying hardware configurations.  
+Typical specifications included:  
+- CPU: Intel Core i7 and Apple M1  
+- RAM: 8GB to 64GB  
+- OS: macOS Sonoma, Windows 11, Linux 
+- No dedicated GPUs were used for this analysis.  
 ## Data Preprocessing
 
 ## Logistic Regression
