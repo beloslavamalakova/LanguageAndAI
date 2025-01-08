@@ -1,17 +1,45 @@
+"""
+Script: Gender-Neutral Text Preprocessor
+Author: Dani
+Date: 7/1/25
+
+Description:
+This script processes a CSV file containing text posts to replace gendered words 
+with gender-neutral alternatives. It reads the input CSV file, applies regex-based 
+replacements to the 'post' column, and outputs a new CSV file with the modified text.
+
+Key Features:
+- Supports a comprehensive list of gendered words and their neutral replacements.
+- Uses regex for flexible and efficient text pattern matching.
+- Processes large CSV files containing text data.
+
+Inputs and Outputs:
+- Input: A CSV file containing a 'post' column with text data to be processed.
+- Output: A new CSV file where all gendered words in the 'post' column have been replaced with gender-neutral terms.
+
+Notes:
+- Ensure the input CSV file has a 'post' column that contains the text data.
+- Works with altered gender CSV file where all of the information is in 1 column separated with commas (done that manually in excel)
+- The replacement dictionary can be expanded to include additional terms as needed.
+"""
+
 import pandas as pd
 import re
 
+# Specify the input CSV file path
 csv_file = 'shuffled_file_preprocessed.csv' 
 df = pd.read_csv(csv_file)
 
-#List of gendered words and their replacements
+# Dictionary of gendered words and their replacements
 replacement_dict = {
+    # Patterns for terms for both genders
     r"\b(fe)?male(s)?\b": "person",
     r"\b(wo)?m[ae]n\b": "person",
     r"\b(s)?he\b": "they",
     r"\bpolice(wo)?m[ae]n\b": "person",
     r"\bpost(wo)?m[ae]n\b": "person",
     
+    # Patterns for female-specific terms
     r"\bher\b": "them",
     r"\bhers\b": "their",
     r"\bherself\b": "themselves",
@@ -41,6 +69,7 @@ replacement_dict = {
     r"\bwitch(es)?\b": "person",
     r"\bstewardess(es)?\b": "person",
 
+    # Patterns for male-specific terms
     r"\bhim\b": "them",
     r"\bhis\b": "their",
     r"\bhimself\b": "themselves",
@@ -71,8 +100,19 @@ replacement_dict = {
     r"\bhost(s)?\b": "person",
 }
 
-#Replace gendered words
+# Replace gendered words
 def replace_gendered_words(text, replacements):
+    """
+    Replaces gendered words in the given text with their neutral equivalents 
+    based on the replacement dictionary.
+    
+    Args:
+        text (str): The input text to process.
+        replacements (dict): Dictionary of patterns and their replacements.
+    
+    Returns:
+        str: The processed text with gendered words replaced.
+    """
     for pattern, replacement in replacements.items():
         text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
     return text
