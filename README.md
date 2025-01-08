@@ -32,10 +32,30 @@ The code was written using these libraries and versions:
 The experiments were conducted on multiple laptops with varying hardware configurations.  
 Typical specifications included:  
 - CPU: Intel Core i7 and Apple M1  
-- RAM: 8GB to 64GB  
+- RAM: 8GB to 32GB  
 - OS: macOS Sonoma, Windows 11, Linux 
-- No dedicated GPUs were used for this analysis.  
+- No dedicated GPUs were used for this analysis.
+
+## Data Cleaning
+This project's data cleaning process differs from standard data cleaning practices. Since our primary focus was on handling a contaminated dataset, data cleaning here specifically refers to the removal of gender-implying words and their replacement with gender-neutral alternatives.
 ## Data Preprocessing
+A single text post is preprocessed using the following steps:
+
+1. Convert to lowercase
+2. Remove punctuation
+3. Split into words
+4. Discard words containing characters outside of `[a-z0-9]`
+5. Naively normalize words to a base form:  
+   - Remove `'ing'` ending if present (e.g., `"playing"` → `"play"`)  
+   - Remove `'ed'` ending if present (e.g., `"painted"` → `"paint"`)  
+   - Remove trailing `'s'` for plural forms (e.g., `"kings"` → `"king"`)  
+6. Remove words longer than 25 characters
+7. Reduce occurrences of 3+ consecutive identical letters to 2:  
+   - `"Haaaaappy"` → `"haappy"`.  
+8. Return a cleaned list of words
+
+**Limitation:**
+Words ending with `'s'` like `"boss"` may be simplified to `"bos"`. However, the word `"bos"` is still connected to `"boss"` in the dataset, minimizing the negative impact.
 
 ## Logistic Regression
 This component applies Logistic Regression to our data in multiple configurations. Specifically, we evaluate:
