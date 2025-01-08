@@ -30,7 +30,7 @@ import re
 import joblib
 import numpy as np
 
-def create_document_labels_file(input_file, output_file, max_rows=50000):
+def create_document_labels_file(input_file, output_file, max_rows=35000):
     """
     Reads the original dataset, extracts the row index and 'female' column, 
     and saves them into a new CSV file.
@@ -114,7 +114,7 @@ def preprocess_text(text):
 
     return cleaned_words
 
-def load_and_preprocess(file_path, max_rows=1000):
+def load_and_preprocess(file_path, max_rows=35000):
     """
     Loads the CSV using pandas for speed and applies preprocessing.
     This function:
@@ -127,13 +127,13 @@ def load_and_preprocess(file_path, max_rows=1000):
     return df['post'].tolist()
 
 def main():
-    input_file = "shuffled_file.csv"
+    input_file = "shuffled_file_gender_neutral.csv"
     output_file = "tf_idf_sparse.csv"
     vocab_file = "vocabulary.csv"
     label_file = "document_labels.csv"
+    #input_file = "shuffled_file.csv"
 
-
-    # uncomment this to create the shuffled file first
+    #uncomment this to create the shuffled file first
     # df = pd.read_csv(input_file)
 
     # # Shuffle the rows randomly
@@ -144,6 +144,7 @@ def main():
     # df_shuffled.to_csv(shuffled_file_path, index=False)
     # print(f"Shuffled data saved to {shuffled_file_path}")
     # return
+
     print("Loading and preprocessing data...")
     documents = load_and_preprocess(input_file, max_rows=35000)
 
