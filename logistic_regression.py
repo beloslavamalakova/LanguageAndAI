@@ -1,7 +1,7 @@
 """
 Script: Logistic Regression on a preprocessed dataset
 Author: Beloslava Malakova
-Date: 30/12/2024
+Date: 30/12/2024, modified 08/01/2025
 
 Description: Applying Logistic regression with L1, L2 and elastic net regularization. Applied is k-fold cross-validation. Accuracy is measured through accuracy, precision, recall and F1 score.
 
@@ -11,7 +11,9 @@ Key Features:
 - 3-fold cross-validation for robust evaluation.
 
 Notes:
-- Does not work with the current TF-IDF matrix, tested however on a ready and simple dataset, where it outputs the results correctly!
+- Does not work with the current TF-IDF matrix, tested however on ours with modifications making the word column to int, and it works. Line 155 changed to: f.write(f"{row},{col},{score:.5f}\n")
+!!! Instead of writing the actual token into the 'word' column we write the numeric column index. That way logistic_regression.py can do .astype(int) on "tf_idf_data['word']" successfully.
+
 """
 
 import pandas as pd
@@ -20,9 +22,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
-# Step 1: Load and transform the TF-IDF data
+# Load and transform the TF-IDF data
 print("Loading and transforming TF-IDF data...")
-tf_idf_data = pd.read_csv("synthetic_tf_idf_sparse.csv")
+tf_idf_data = pd.read_csv("tf_idf_sparse.csv")
 tf_idf_data['row'] = tf_idf_data['row'].astype(int)  # Document indices
 tf_idf_data['word'] = tf_idf_data['word'].astype(int)  # Feature indices
 tf_idf_data['score'] = tf_idf_data['score'].astype(float)  # TF-IDF scores
@@ -41,10 +43,10 @@ print(f"Feature matrix shape: {X.shape}")
 
 # Load labels
 print("Loading document labels...")
-y = pd.read_csv("synthetic_document_labels.csv")["female"]
+y = pd.read_csv("document_labels.csv")["female"]
 assert X.shape[0] == len(y), "Mismatch between feature matrix and labels!"
 
-# Step 3: Initialize 3-fold cross-validation
+# Initialize 3-fold cross-validation
 print("Setting up 3-fold cross-validation...")
 kf = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
 
