@@ -26,6 +26,6 @@ def predict_label(text, vectorizer, model):
     return prediction[0]
 
 # Example sentence
-example_sentence = "I deserve to be a woman imo"
+example_sentence = "I am a person imo thank you xd"
 predicted_label = predict_label(example_sentence, vectorizer, svm_model)
 print(f"The predicted label for '{example_sentence}' is: {predicted_label}")

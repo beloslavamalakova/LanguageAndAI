@@ -1,7 +1,7 @@
 import pandas as pd
 import re
 
-csv_file = 'shuffled_file.csv' 
+csv_file = 'shuffled_file_preprocessed.csv' 
 df = pd.read_csv(csv_file)
 
 #List of gendered words and their replacements
@@ -56,7 +56,7 @@ def replace_gendered_words(text, replacements):
 df['post'] = df['post'].apply(lambda x: replace_gendered_words(str(x), replacement_dict))
 
 #Save the modified DataFrame to a new CSV file
-output_file = 'shuffled_file_gender_neutral.csv'
+output_file = 'shuffled_file_preprocessed_gender_neutral.csv'
 df.to_csv(output_file, index=False)
 
 print(f"Modified CSV saved to {output_file}")

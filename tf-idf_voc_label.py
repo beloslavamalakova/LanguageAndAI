@@ -30,7 +30,7 @@ import re
 import joblib
 import numpy as np
 
-def create_document_labels_file(input_file, output_file, max_rows=35000):
+def create_document_labels_file(input_file, output_file, max_rows=45000):
     """
     Reads the original dataset, extracts the row index and 'female' column, 
     and saves them into a new CSV file.
@@ -114,7 +114,7 @@ def preprocess_text(text):
 
     return cleaned_words
 
-def load_and_preprocess(file_path, max_rows=35000):
+def load_and_preprocess(file_path, max_rows=45000):
     """
     Loads the CSV using pandas for speed and applies preprocessing.
     This function:
@@ -126,14 +126,22 @@ def load_and_preprocess(file_path, max_rows=35000):
     df['post'] = df['post'].astype(str).apply(lambda x: ' '.join(preprocess_text(x)))
     return df['post'].tolist()
 
+def load_preprocessed(file_path, max_rows=45000):
+    
+    df = pd.read_csv(file_path, usecols=['post'], nrows=max_rows, encoding='utf-8')
+    df['post'] = df['post'].astype(str).apply(lambda x: ' '.join(x.split(',')))
+    return df['post'].tolist()
+
+
 def main():
-    input_file = "shuffled_file_gender_neutral.csv"
+    input_file = "shuffled_file_preprocessed_gender_neutral.csv"
     output_file = "tf_idf_sparse.csv"
     vocab_file = "vocabulary.csv"
     label_file = "document_labels.csv"
-    #input_file = "shuffled_file.csv"
 
-    #uncomment this to create the shuffled file first
+    #This is used to create the preprocessed shuffled file
+    # input_file = "shuffled_file.csv"
+    # preprocessed_file = "shuffled_file_preprocessed.csv"
     # df = pd.read_csv(input_file)
 
     # # Shuffle the rows randomly
@@ -143,11 +151,15 @@ def main():
     # shuffled_file_path = "shuffled_file.csv"  # Replace with the desired output file name
     # df_shuffled.to_csv(shuffled_file_path, index=False)
     # print(f"Shuffled data saved to {shuffled_file_path}")
+    
+
+    # print("Loading and preprocessing data...")
+    # documents = load_and_preprocess(input_file, max_rows=45000)
+    # df_shuffled['post'] = documents  # Replace the 'post' column with preprocessed text
+    # df_shuffled.to_csv(preprocessed_file, index=False)
     # return
 
-    print("Loading and preprocessing data...")
-    documents = load_and_preprocess(input_file, max_rows=35000)
-
+    documents = load_preprocessed(input_file, max_rows=45000)
     print("Fitting TfidfVectorizer...")
     # Use TfidfVectorizer to handle tokenization, vocabulary, and TF-IDF
     # We already processed the text, so we can trust the whitespace tokenization
@@ -190,7 +202,7 @@ def main():
     print(f"Vocabulary saved to {vocab_file}")
 
     # Save document labels
-    create_document_labels_file(input_file, label_file, max_rows=35000)
+    create_document_labels_file(input_file, label_file, max_rows=45000)
 
 if __name__ == "__main__":
     main()
