@@ -7,7 +7,22 @@ Repository for a research paper "Impact of Gender-Neutral Data Cleaning on SVM a
   year = {2024}
 }
 ```
-## TL;DR
+## Overview
+- Paper Details
+  - TL;DR
+  - Reproduction
+  - Dependencies
+  - Resources
+- Project's Pipeline
+  - 1. Data Cleaning
+  - 2. Data Preprocessing
+  - 3. Feature Engineering
+  - 4. Logistic Regression
+  - 5. SVM
+- Configuration
+- Extensions
+## Paper Details
+### TL;DR
 -  **Data Cleaning:** Removed gender-implying words and replaced them with gender-neutral alternatives.  
 -  **Data Processing:** Preprocessed both the original contaminated CSV and the gender-neutral CSV.  
 -  **Feature Engineering:** Created TF-IDF encodings for (1) contaminated data, (2) gender-neutral data, and (3) raw, unprocessed data.  
@@ -15,8 +30,8 @@ Repository for a research paper "Impact of Gender-Neutral Data Cleaning on SVM a
    - Trained **SVM** on all three encodings, fine-tuning the **C** hyperparameter (0.1, 1, 10).  
    - Trained **Logistic Regression** on all three encodings, fine-tuning regularization methods (**L1, L2, Elastic Net**).  
 -  **Comparison:** Compared classification results across different models and data encodings.  
-## Reproduction
-##  Dependencies
+### Reproduction
+###  Dependencies
 
 The code was written using these libraries and versions:
 | Tool        | Version |
@@ -28,17 +43,17 @@ The code was written using these libraries and versions:
 | scipy          | 1.11.4  |
 | tqdm           | 4.66.1  |
 | joblib         | 1.3.2   |
-## Resources
+### Resources
 The experiments were conducted on multiple laptops with varying hardware configurations.  
 Typical specifications included:  
 - CPU: Intel Core i7 and Apple M1  
 - RAM: 8GB to 32GB  
 - OS: macOS Sonoma, Windows 11, Linux 
 - No dedicated GPUs were used for this analysis.
-
-## Data Cleaning
+## Project's Pipeline
+### 1. Data Cleaning
 This project's data cleaning process differs from standard data cleaning practices. Since our primary focus was on handling a contaminated dataset, data cleaning here specifically refers to the removal of gender-implying words and their replacement with gender-neutral alternatives.
-## Data Preprocessing
+### 2. Data Preprocessing
 A single text post is preprocessed using the following steps:
 
 1. Convert to lowercase
@@ -56,8 +71,9 @@ A single text post is preprocessed using the following steps:
 
 **Limitation:**
 Words ending with `'s'` like `"boss"` may be simplified to `"bos"`. However, the word `"bos"` is still connected to `"boss"` in the dataset, minimizing the negative impact.
-
-## Logistic Regression
+### 3. Feature Engineering
+Describe tf-idf here.
+### 4. Logistic Regression
 This component applies Logistic Regression to our data in multiple configurations. Specifically, we evaluate:
 
 1. **Simple Logistic Regression**  
@@ -69,7 +85,7 @@ This component applies Logistic Regression to our data in multiple configuration
    - **Ridge (L2)**: Shrinks coefficients to reduce overfitting without forcing them to zero.
    - **Elastic Net**: A combination of L1 and L2 penalties, balancing feature sparsity and coefficient shrinkage.
 
-### TF-IDF Representations
+**TF-IDF Representations:**
 We compare three TF-IDF matrices derived from:
 - **Cleaned (1)**: Dataset with standard text preprocessing.
 - **Cleaned (2)**: Another variant or additional preprocessing steps. (@Boris @Dani, add what is different:))
@@ -77,6 +93,26 @@ We compare three TF-IDF matrices derived from:
 
 Each of the four Logistic Regression configurations (Simple, L1, L2, and Elastic Net) is trained on a TF-IDF matrix.  
 
-## SVM
+### 5. SVM
+Describe SVM here.
+## Configuration
+This section outlines the elements that can be adjusted to modify the experiment and explore alternative results.
 
-## Results and Discussion
+1. **Dataset Variation**
+   - The experiment can be repeated using a different gender-labeled dataset to assess the robustness of the models across datasets.  
+   - To modify the dataset, changes need to be made in the file `"x"`.  
+
+2. **Hyperparameter Values**
+   - The fine-tuning of hyperparameter C in SVM can be adjusted to explore model performance further.  
+   - Current C hyperparameter in SVM include values (0.1, 1, 10)  
+   - To modify the hyperparameters' values, changes need to be made in the file `"x"`.
+
+3. **Model Hyperparameter Modification**
+   - Beyond fine-tuning, the core hyperparameters themselves can be modified.  
+   - For example, the **SVM kernel** can be changed:
+     - Current: Linear  
+     - Alternatives: Polynomial, RBF (Radial Basis Function)
+   - To modify the hyperparameters or add more, changes need to be made in the file `"x"`.
+  
+## Extensions
+What can be added in the future.
