@@ -11,11 +11,11 @@ Key Features:
 - 3-fold cross-validation for robust evaluation.
 
 Notes:
-- Does not work with the current TF-IDF matrix, tested however on ours with modifications making the word column to int, and it works. Line 155 changed to: f.write(f"{row},{col},{score:.5f}\n")
-!!! Instead of writing the actual token into the 'word' column we write the numeric column index. That way logistic_regression.py can do .astype(int) on "tf_idf_data['word']" successfully.
-
+- Incorporated timer.
+- When it has to be run for the raw data simply change the datasets in tf_idf_data =, and y.
 """
 
+import time
 import pandas as pd
 from scipy.sparse import coo_matrix
 from sklearn.linear_model import LogisticRegression
@@ -24,7 +24,7 @@ from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
 # Load and transform the TF-IDF data
 print("Loading and transforming TF-IDF data...")
-tf_idf_data = pd.read_csv("tf_idf_sparse.csv")
+tf_idf_data = pd.read_csv("tf_idf_sparse_raw.csv")
 tf_idf_data['row'] = tf_idf_data['row'].astype(int)  # Document indices
 tf_idf_data['word'] = tf_idf_data['word'].astype(int)  # Feature indices
 tf_idf_data['score'] = tf_idf_data['score'].astype(float)  # TF-IDF scores
@@ -43,7 +43,7 @@ print(f"Feature matrix shape: {X.shape}")
 
 # Load labels
 print("Loading document labels...")
-y = pd.read_csv("document_labels.csv")["female"]
+y = pd.read_csv("document_labels_raw.csv")["female"]
 assert X.shape[0] == len(y), "Mismatch between feature matrix and labels!"
 
 # Initialize 3-fold cross-validation
@@ -62,6 +62,7 @@ models = {
 results = {}
 for model_name, model in models.items():
     print(f"\nEvaluating {model_name}...")
+    start_time = time.time()
     fold_metrics = {"Accuracy": [], "Precision": [], "Recall": [], "F1 Score": []}
 
     for train_index, test_index in kf.split(X, y):
@@ -83,15 +84,29 @@ for model_name, model in models.items():
         fold_metrics["Recall"].append(recall)
         fold_metrics["F1 Score"].append(f1)
 
+    # End timer after cross-validation
+    end_time = time.time()
+    total_run_time = end_time - start_time  # total time in seconds
+
     # Average metrics across folds
-    results[model_name] = {metric: sum(values) / len(values) for metric, values in fold_metrics.items()}
+    results[model_name] = {
+        metric: sum(values) / len(values) for metric, values in fold_metrics.items()
+    }
+    results[model_name]["Runtime"] = total_run_time
+
     print(f"Results for {model_name}:")
     for metric, value in results[model_name].items():
-        print(f"  {metric}: {value:.4f}")
+        if metric != "Runtime":
+            print(f"  {metric}: {value:.4f}")
+        else:
+            print(f"  {metric}: {value:.2f} seconds")
 
 # final results summary
 print("\nFinal Comparison Summary:")
 for model_name, metrics in results.items():
     print(f"\n{model_name}:")
     for metric, value in metrics.items():
-        print(f"  {metric}: {value:.4f}")
+        if metric == "Runtime":
+            print(f"  {metric}: {value:.2f} seconds")
+        else:
+            print(f"  {metric}: {value:.4f}")
