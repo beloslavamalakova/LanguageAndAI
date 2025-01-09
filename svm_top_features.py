@@ -1,16 +1,22 @@
 import numpy as np
 import joblib
 
+# Load the input file to dynamically determine base names
+input_file = "gender_preprocessed_neutral_gender.csv"  # Replace with your input file
+base_name = input_file.split('.')[0]  # Extract base name from input file
+
 # Get the feature names (vocabulary)
-vectorizer = joblib.load("tfidf_vectorizer.pkl")  # Load the vectorizer
+vectorizer_file = f"{base_name}_tfidf_vectorizer.pkl"
+vectorizer = joblib.load(vectorizer_file)  # Load the vectorizer
 feature_names = vectorizer.get_feature_names_out()
 
 # Get the SVM coefficients (weights for each feature)
-svm_model = joblib.load("svm_model.pkl")
+svm_model_file = f"{base_name}_svm_model.pkl"
+svm_model = joblib.load(svm_model_file)
 svm_weights = svm_model.coef_.toarray()
 
 # Find the most important features for each class
-def get_top_features(weights, feature_names, top_n=2):
+def get_top_features(weights, feature_names, top_n=20):
     """
     Get the most influential features for the positive and negative classes.
 
@@ -33,7 +39,7 @@ def get_top_features(weights, feature_names, top_n=2):
         "negative": top_negative_features
     }
 
-# Get top 10 influential features for each class
+# Get top 20 influential features for each class
 top_features = get_top_features(svm_weights, feature_names, top_n=20)
 
 print("Top features for label 1 (woman):")

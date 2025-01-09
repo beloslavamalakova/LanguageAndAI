@@ -8,11 +8,14 @@ from tqdm import tqdm
 import joblib  # For saving the model
 
 # 1. Load the sparse TF-IDF matrix
-file_path = "tf_idf_sparse_matrix.npz"  # Replace with your file path
+input_file = "gender_preprocessed_neutral_gender.csv"  # Replace with your input file
+base_name = input_file.split('.')[0]  # Extract base name from input file
+
+file_path = f"{base_name}_tf_idf_sparse_matrix.npz"  # Construct file name dynamically
 tf_idf_matrix = load_npz(file_path)
 
 # 2. Load the document labels
-label_file = "document_labels.csv"  # Replace with your file path
+label_file = f"{base_name}_document_labels.csv"  # Construct file name dynamically
 labels_df = pd.read_csv(label_file)
 
 # 3. Check for and handle missing labels
@@ -51,9 +54,10 @@ for i in tqdm(range(10), desc="Training Progress", unit="block"):
 # Refit the model fully after approximate training (if needed)
 svm_model = progress_model
 
-# Save the trained SVM model and vectorizer
-joblib.dump(svm_model, "svm_model.pkl")
-print("Trained SVM model saved as 'svm_model.pkl'")
+# Save the trained SVM model
+svm_model_file = f"{base_name}_svm_model.pkl"  # Construct file name dynamically
+joblib.dump(svm_model, svm_model_file)
+print(f"Trained SVM model saved as '{svm_model_file}'")
 
 # 6. Predict and evaluate
 print("Evaluating the SVM...")
