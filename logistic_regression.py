@@ -22,20 +22,35 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
+
+
+# labels = pd.read_csv("gender_shuffled_document_labels.csv")
+# nan_rows = labels[labels['female'].isna()]
+# print("Rows with NaN values:")
+# print(nan_rows)
+# labels = labels.dropna(subset=['female'])
+
 # Load and transform the TF-IDF data
 print("Loading and transforming TF-IDF data...")
-tf_idf_data = pd.read_csv("tf_idf_sparse_raw.csv")
-tf_idf_data['row'] = tf_idf_data['row'].astype(int)  # Document indices
+tf_idf_data = pd.read_csv("gender_shuffled_tf_idf_sparse.csv")
+#tf_idf_data = pd.read_csv("tf_idf_sparse_raw.csv") #works for this
+#tf_idf_data['row'] = tf_idf_data['row'].astype(int)  # Document indices
+tf_idf_data['document'] = tf_idf_data['document'].astype(int)  # Document indices CHANGE BACK TO ROW
 tf_idf_data['word'] = tf_idf_data['word'].astype(int)  # Feature indices
 tf_idf_data['score'] = tf_idf_data['score'].astype(float)  # TF-IDF scores
 
 # Get the number of documents and features
-n_documents = tf_idf_data["row"].max() + 1
+#n_documents = tf_idf_data["row"].max() + 1
+n_documents = tf_idf_data["document"].max() + 1
+
 n_features = tf_idf_data["word"].max() + 1
 
 # Create a sparse matrix at the document level
+#X = coo_matrix(
+#    (tf_idf_data['score'], (tf_idf_data['row'], tf_idf_data['word'])), #change back to row
+#    shape=(n_documents, n_features)
 X = coo_matrix(
-    (tf_idf_data['score'], (tf_idf_data['row'], tf_idf_data['word'])),
+    (tf_idf_data['score'], (tf_idf_data['document'], tf_idf_data['word'])), #change back to row
     shape=(n_documents, n_features)
 ).tocsr()
 
@@ -43,8 +58,19 @@ print(f"Feature matrix shape: {X.shape}")
 
 # Load labels
 print("Loading document labels...")
-y = pd.read_csv("document_labels_raw.csv")["female"]
+# y = pd.read_csv("document_labels_raw.csv")["female"] # works for this
+y = pd.read_csv("gender_shuffled_document_labels.csv")["female"] # shuffled data
+
+# if pd.isna(y).any():
+#     raise ValueError("Target labels contain NaN values. Please preprocess your data correctly.")
+
 assert X.shape[0] == len(y), "Mismatch between feature matrix and labels!"
+
+nan_mask = pd.isna(y)  # Identify rows where y is NaN
+if nan_mask.any():
+    print(f"Found {nan_mask.sum()} NaN values in labels. Removing them...")
+    y = y[~nan_mask]  # Keep only non-NaN values in y
+    X = X[~nan_mask]  # Remove corresponding rows from X
 
 # Initialize 3-fold cross-validation
 print("Setting up 3-fold cross-validation...")
