@@ -139,7 +139,7 @@ def main():
     vocab_file = "vocabulary.csv"
     label_file = "document_labels.csv"
 
-    #This is used to create the preprocessed shuffled file
+    # This is used to create the preprocessed shuffled file
     # input_file = "shuffled_file.csv"
     # preprocessed_file = "shuffled_file_preprocessed.csv"
     # df = pd.read_csv(input_file)
