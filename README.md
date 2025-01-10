@@ -53,9 +53,9 @@ The code was written using these libraries and versions:
 ### Resources
 The experiments were conducted on multiple laptops with varying hardware configurations.  
 Typical specifications included:  
-- CPU: Intel Core i7 and Apple M1  
+- CPU: Intel Core i5, i7 and Apple M1  
 - RAM: 8GB to 32GB  
-- OS: macOS Sonoma, Windows 11, Linux 
+- OS: macOS Sonoma, Windows 11, Ubuntu 20.04 LTS
 - No dedicated GPUs were used for this analysis.
 Specific running times were included in details in the paper.
 ## Project's Pipeline
@@ -97,13 +97,27 @@ This component applies Logistic Regression to our data in multiple configuration
    - **Ridge (L2)**: Shrinks coefficients to reduce overfitting without forcing them to zero.
    - **Elastic Net**: A combination of L1 and L2 penalties, balancing feature sparsity and coefficient shrinkage.
 
-We compare the three TF-IDF matrices derived from the encodings(Contaminated, Cleaned and Raw).
+We compare the three TF-IDF matrices derived from the encodings(Contaminated, Cleaned, and Raw).
 
 Each of the four Logistic Regression configurations (Simple, L1, L2, and Elastic Net) is trained on a TF-IDF matrix.  
 
+Order of running the code:
+1. preprocessing_separate.py -> creates "gender_shuffled.csv", "gender_preprocessed.csv", "gender_preprocessed_neutral_gender.csv"
+2. tf_idf_new(without_preprocessing).py -> creates for each of the three newly created files 5 new files, used later for both SVM and Logistic Regression:
+   - f"{base_name}_tf_idf_sparse.csv"
+   - f"{base_name}_tf_idf_sparse_matrix.npz"
+   - f"{base_name}_vocabulary.csv"
+   - f"{base_name}_document_labels.csv"
+   - f"{base_name}_tfidf_vectorizer.pkl"
+3. run logistic_regression.py with:
+   - tf_idf_data = pd.read_csv("NAME_tf_idf_sparse.csv")
+   - y = pd.read_csv("NAME_document_labels.csv")["female"]
+   - word_mapping = pd.read_csv("NAME_vocabulary.csv")
+
+
 ### 5. SVM
 This component applies SVM to our data in multiple configurations. Specifically, we evaluate SVM using a linear kernel with different values of C hyperparameter. Tested values were: 0.1, 1, 10, 20, 50, 100; leading to six different versions of SVM.
-We compare the three TF-IDF matrices derived from the encodings(Contaminated, Cleaned and Raw).
+We compare the three TF-IDF matrices derived from the encodings(Contaminated, Cleaned, and Raw).
 
 Each of the six SVM configurations is trained on a TF-IDF matrix.  
 
