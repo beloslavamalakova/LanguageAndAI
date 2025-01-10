@@ -31,12 +31,23 @@ Repository for a research paper "Impact of Gender-Neutral Data Cleaning on SVM a
    - Trained **Logistic Regression** on all three encodings, fine-tuning regularization methods (**L1, L2, Elastic Net**).  
 -  **Comparison:** Compared classification results across different models and data encodings.  
 ### Reproduction
-- To clean the initial data by removing the gender-implying words run `gender_words_modified.py`. It contains the replacement-words dictionary, which can be expanded.
+Order of running the code:
 > **Important Note:** The code processes a modified gender CSV file where all information is joint into a single column, with values separated by commas (manually adjusted in Excel). Make sure to always update the file path in the code to match your CSV file location.
-- To preprocess the data (may work with the original or the cleaned version) by adhering to standard preprocessing practices run `____.py`.______ The file path of the CSV file should be adjusted to match your file.
-- To compute the TF-IDF scores of every term across all documents run `tf-idf_voc_label.py`. This script also extracts the vocabulary and saves it for further use.
-- To perform Logistic Regression `logistic_regression.py` file should be run. Further descriptions and instructions are included in the file.
-- To perform SVM `svm_boris.py` file should be run. Further descriptions and instructions are included in the file.
+1. To clean the initial data by removing the gender-implying words run `preprocessing_separate.py`. It contains the replacement-words dictionary, which can be expanded. It preprocesses the data (may work with the original or the cleaned version) by adhering to standard preprocessing practices and creates `gender_shuffled.csv`, `gender_preprocessed.csv`, `gender_preprocessed_neutral_gender.csv`.
+3. To compute the TF-IDF scores of every term across all documents run `tf_idf_new(without_preprocessing).py`. It creates for each of the three newly created files 5 new files, used later for both SVM and Logistic Regression:
+   - f`{base_name}_tf_idf_sparse.csv`
+   - f`{base_name}_tf_idf_sparse_matrix.npz`
+   - f`{base_name}_vocabulary.csv`
+   - f`{base_name}_document_labels.csv`
+   - f`{base_name}_tfidf_vectorizer.pkl`
+4. To perform Logistic Regression run `logistic_regression.py` with:
+   - tf_idf_data = pd.read_csv("NAME_tf_idf_sparse.csv")
+   - y = pd.read_csv("NAME_document_labels.csv")["female"]
+   - word_mapping = pd.read_csv("NAME_vocabulary.csv")
+5. To perform SVM run `svm_boris.py` with:
+   - input_file = "gender_preprocessed_neutral_gender.csv"
+6. To see the top words for each gender run `svm_top_features.py`
+7. To test a given sentence run `test_single_sentance.py`
 
 ###  Dependencies
 
@@ -119,7 +130,18 @@ Order of running the code:
 This component applies SVM to our data in multiple configurations. Specifically, we evaluate SVM using a linear kernel with different values of C hyperparameter. Tested values were: 0.1, 1, 10, 20, 50, 100; leading to six different versions of SVM.
 We compare the three TF-IDF matrices derived from the encodings(Contaminated, Cleaned, and Raw).
 
-Each of the six SVM configurations is trained on a TF-IDF matrix.  
+Each of the six SVM configurations is trained on a TF-IDF matrix and calculates the result as the average of the threefold cross valudation. 
+
+Order of running the code:
+1. preprocessing_separate.py -> creates "gender_shuffled.csv", "gender_preprocessed.csv", "gender_preprocessed_neutral_gender.csv"
+2. tf_idf_new(without_preprocessing).py -> creates for each of the three newly created files 5 new files, used later for both SVM and Logistic Regression:
+   - f"{base_name}_tf_idf_sparse.csv"
+   - f"{base_name}_tf_idf_sparse_matrix.npz"
+   - f"{base_name}_vocabulary.csv"
+   - f"{base_name}_document_labels.csv"
+   - f"{base_name}_tfidf_vectorizer.pkl"
+3. run svm_boris.py with:
+   - input_file = "gender_preprocessed_neutral_gender.csv"
 
 ## Configuration
 This section outlines the elements that can be adjusted to modify the experiment and explore alternative results.
