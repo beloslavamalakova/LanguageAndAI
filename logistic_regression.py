@@ -9,6 +9,7 @@ Key Features:
 - Evaluates different regularization techniques.
 - Metrics: Accuracy, Precision, Recall, F1-score.
 - 3-fold cross-validation for robust evaluation.
+- Top 10 most influential words using the vocab (also has to be manually changed when running for different datasets)
 
 Notes:
 - Incorporated timer.
@@ -17,6 +18,7 @@ Notes:
 
 import time
 import pandas as pd
+import numpy as np
 from scipy.sparse import coo_matrix
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold
@@ -32,7 +34,7 @@ from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
 # Load and transform the TF-IDF data
 print("Loading and transforming TF-IDF data...")
-tf_idf_data = pd.read_csv("gender_shuffled_tf_idf_sparse.csv")
+tf_idf_data = pd.read_csv("gender_preprocessed_neutral_gender_tf_idf_sparse.csv")
 #tf_idf_data = pd.read_csv("tf_idf_sparse_raw.csv") #works for this
 #tf_idf_data['row'] = tf_idf_data['row'].astype(int)  # Document indices
 tf_idf_data['document'] = tf_idf_data['document'].astype(int)  # Document indices CHANGE BACK TO ROW
@@ -59,9 +61,9 @@ print(f"Feature matrix shape: {X.shape}")
 # Load labels
 print("Loading document labels...")
 # y = pd.read_csv("document_labels_raw.csv")["female"] # works for this
-y = pd.read_csv("gender_shuffled_document_labels.csv")["female"] # shuffled data
+y = pd.read_csv("gender_preprocessed_neutral_gender_document_labels.csv")["female"] # shuffled data
 
-# if pd.isna(y).any():
+# if pd.isna(y).any():oup
 #     raise ValueError("Target labels contain NaN values. Please preprocess your data correctly.")
 
 assert X.shape[0] == len(y), "Mismatch between feature matrix and labels!"
@@ -83,6 +85,12 @@ models = {
     "Ridge (L2)": LogisticRegression(penalty='l2', solver='liblinear', C=1.0, max_iter=500),
     "Elastic Net": LogisticRegression(penalty='elasticnet', solver='saga', l1_ratio=0.5, C=1.0, max_iter=500)
 }
+
+# Load the word-index mapping
+print("Loading word-to-index mapping...")
+word_mapping = pd.read_csv("gender_preprocessed_vocabulary.csv")  # Adjust as needed
+word_mapping = dict(zip(word_mapping['index'], word_mapping['word']))
+
 
 # cross-validation and comparison models
 results = {}
@@ -126,6 +134,16 @@ for model_name, model in models.items():
             print(f"  {metric}: {value:.4f}")
         else:
             print(f"  {metric}: {value:.2f} seconds")
+
+
+    # Analyze top 10 influential words
+    if hasattr(model, "coef_"):
+        coefficients = model.coef_.flatten()
+        top_indices = np.argsort(np.abs(coefficients))[-10:]
+        top_words = [(word_mapping[idx], coefficients[idx]) for idx in reversed(top_indices)]
+        print(f"\nTop 10 Influential Words for {model_name}:")
+        for word, coef in top_words:
+            print(f"{word}: {coef:.4f}")
 
 # final results summary
 print("\nFinal Comparison Summary:")
