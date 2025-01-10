@@ -27,7 +27,7 @@ Repository for a research paper "Impact of Gender-Neutral Data Cleaning on SVM a
 -  **Data Processing:** Preprocessed both the original contaminated CSV and the gender-neutral CSV.  
 -  **Feature Engineering:** Created TF-IDF encodings for (1) contaminated data, (2) gender-neutral data, and (3) raw, unprocessed data.  
 -  **Model Training:**  
-   - Trained **SVM** on all three encodings, fine-tuning the **C** hyperparameter (0.1, 1, 10).  
+   - Trained **SVM** on all three encodings, fine-tuning the **C** hyperparameter (0.1, 1, 10, 20, 50, 100).  
    - Trained **Logistic Regression** on all three encodings, fine-tuning regularization methods (**L1, L2, Elastic Net**).  
 -  **Comparison:** Compared classification results across different models and data encodings.  
 ### Reproduction
@@ -35,8 +35,8 @@ Repository for a research paper "Impact of Gender-Neutral Data Cleaning on SVM a
 > **Important Note:** The code processes a modified gender CSV file where all information is joint into a single column, with values separated by commas (manually adjusted in Excel). Make sure to always update the file path in the code to match your CSV file location.
 - To preprocess the data (may work with the original or the cleaned version) by adhering to standard preprocessing practices run `____.py`.______ The file path of the CSV file should be adjusted to match your file.
 - To compute the TF-IDF scores of every term across all documents run `tf-idf_voc_label.py`. This script also extracts the vocabulary and saves it for further use.
-- log reg
-- svm
+- To perform Logistic Regression `logistic_regression.py` file should be run. Further descriptions and instructions are included in the file.
+- To perform SVM `svm_boris.py` file should be run. Further descriptions and instructions are included in the file.
 
 ###  Dependencies
 
@@ -57,6 +57,7 @@ Typical specifications included:
 - RAM: 8GB to 32GB  
 - OS: macOS Sonoma, Windows 11, Linux 
 - No dedicated GPUs were used for this analysis.
+Specific running times were included in details in the paper.
 ## Project's Pipeline
 ### 1. Data Cleaning
 This project's data cleaning process appends an unusual technique to the standard data cleaning practices. Since our primary focus was on handling a contaminated dataset, data cleaning here specifically refers to identifying gender-implying words(e.g., "he," "she," "man," "woman") and replacing them with gender-neutral alternatives(e.g., "they," "person").
@@ -101,7 +102,11 @@ We compare the three TF-IDF matrices derived from the encodings(Contaminated, Cl
 Each of the four Logistic Regression configurations (Simple, L1, L2, and Elastic Net) is trained on a TF-IDF matrix.  
 
 ### 5. SVM
-Describe SVM here.
+This component applies SVM to our data in multiple configurations. Specifically, we evaluate SVM using a linear kernel with different values of C hyperparameter. Tested values were: 0.1, 1, 10, 20, 50, 100; leading to six different versions of SVM.
+We compare the three TF-IDF matrices derived from the encodings(Contaminated, Cleaned and Raw).
+
+Each of the six SVM configurations is trained on a TF-IDF matrix.  
+
 ## Configuration
 This section outlines the elements that can be adjusted to modify the experiment and explore alternative results.
 
@@ -111,7 +116,7 @@ This section outlines the elements that can be adjusted to modify the experiment
 
 2. **Hyperparameter Values**
    - The fine-tuning of hyperparameter C in SVM can be adjusted to explore model performance further.  
-   - Current C hyperparameter in SVM include values (0.1, 1, 10)  
+   - Current C hyperparameter in SVM include values (0.1, 1, 10, 20, 50, 100)  
    - To modify the hyperparameters' values, changes need to be made in the file `"x"`.
 
 3. **Model Hyperparameter Modification**
@@ -122,4 +127,4 @@ This section outlines the elements that can be adjusted to modify the experiment
    - To modify the hyperparameters or add more, changes need to be made in the file `"x"`.
   
 ## Extensions
-What can be added in the future.
+Future improvements to this work could include testing the models on a different corpus to evaluate their robustness and generalizability. The range of models used can also be expanded, for example, by training the SVM with a non-linear kernel to explore more complex classifying boundaries. Additionally, in file `svm_top_features.py`, we present the top 10 words identified by the model as most influential in classifying texts under male and female labels. Similarly, file `logistic_regression.py` provides the same analysis for logistic regression. In our current work, these word lists did not contain any gender-related terms. However, when applied to a different corpus, this aspect could be further investigated, and steps could be taken to gender-neutralize influential words in the dataset if necessary.
